@@ -1,72 +1,35 @@
-# OpenRouter Modern AI Chat Client (Single-File PWA)
+# LLM Gateway Chat Client (Single-File PWA)
 
-A fully-featured, modern chat client for the OpenRouter API, built entirely in a single, zero-dependency HTML file.
+A zero-dependency, single-file chat client for our internal LiteLLM gateway. One HTML file, no build step, no frameworks, no external CDNs. Open it in a browser, paste your gateway key, and chat with the models your key has access to.
 
-No build steps. No frameworks. No external CDNs. Just download, open in the browser, and start chatting with hundreds of LLMs available in OpenRouter - https://jimliddle.github.io/OpenRouter-Client/
+This is an adapted edition of an OpenRouter client, repointed at our LiteLLM proxy.
 
-<img width="924" height="512" alt="OpenRouter Chat Client Screenshot" src="https://github.com/user-attachments/assets/6ad61d3a-0a4d-4e0b-b65b-2c55654c949f" />
+## Changes from the original
 
+- API base URL changed from `https://openrouter.ai/api/v1` to our LiteLLM gateway at `https://llm-gw.itmindsinternal.dk/v1` (`/v1/models` and `/v1/chat/completions`)
+- Model list parsing fixed for the OpenAI response shape (LiteLLM returns `id` without `name`)
+- OpenRouter-specific request headers removed
 
-## Features
+## How to use
 
-Zero Dependencies: Built with pure Vanilla HTML, CSS, and JavaScript. Everything, including SVG icons, is embedded.
+1. Open `index.html` in a browser, or visit the hosted URL.
+2. Open **Settings & API** in the sidebar.
+3. Paste your LiteLLM virtual key and save.
+4. Pick a model and start chatting. The model dropdown shows only the models your key is scoped to.
 
-True Single-File PWA: Dynamically generates its own manifest.json and Service Worker via Blob URLs, allowing you to install it as a native app on mobile or desktop directly from a single file.
+All data (key, threads, messages) is stored locally in your browser via IndexedDB. Nothing is sent anywhere except directly to the gateway.
 
-100% Client-Side Privacy: Your API key, settings, and chat histories are stored securely and locally on your device using IndexedDB.
+### Installing as an app (PWA)
 
-Multi-Threading: Organize your conversations with unlimited distinct chat threads.
+The page generates its own manifest and service worker at runtime, so it installs like a native app. Use the "Install App" button in the sidebar, or your browser's "Add to Home Screen".
 
-Dynamic Model Switching: Fetches your available OpenRouter models on the fly. Switch models seamlessly mid-conversation—each AI response is individually tagged with the model that generated it.
+## Known limitations
 
-Granular Message Control: Easily copy or delete individual prompts and responses.
+- **No streaming:** responses render only when the full completion arrives, so long generations look idle while running.
+- Requests appear in the gateway's spend logs under your virtual key, as with any other client.
 
-Mobile-First Dark UI: A highly responsive, touch-friendly interface inspired by native dark mode applications.
+## Credit
 
-"Danger Zone" Data Wipe: A one-click option to completely purge all local storage, threads, and API keys from your device.
+Based on [OpenRouter-Client](https://github.com/jimliddle/OpenRouter-Client) by Jim Liddle, MIT licensed. All the heavy lifting (the single-file PWA design, IndexedDB storage, threading, and UI) is his work; this edition only repoints the API endpoints and adjusts response parsing for LiteLLM.
 
-## How to Use
-
-Because this app requires zero build tools, getting started takes seconds:
-
-- Clone or Download this repository or just access it at: https://jimliddle.github.io/OpenRouter-Client/
-
-- Open index.html in any modern web browser.
-
-- Click on Settings & API in the sidebar.
-
-- Enter your OpenRouter API Key and hit Save.
-
-- Select a model and start chatting!
-
-Installing as an App (PWA)
-
-If your browser supports Progressive Web Apps (like Chrome, Edge, or Safari on iOS/Android):
-
-- Open the file/URL in your browser.
-
-- Look for the "Install App" button that dynamically appears in the sidebar (or use your browser's "Add to Home Screen" option).
-
-- The app will be installed with a custom icon and will run in an immersive, standalone window.
-
-## Security & Privacy
-
-This application is completely stateless on the server side (because there is no server).
-
-Storage: All data (including your API key) is stored using the browser's native IndexedDB API.
-
-Network: The only network requests made are directly to https://openrouter.ai/api/v1/ to fetch models and send/receive chat completions. See OpenRouter for their privacy policy.
-
-## Tech Stack
-
-- HTML5 / CSS3: Custom, responsive layout using Flexbox and CSS variables.
-
-- Vanilla JavaScript (ES6+): Modern JS utilizing async/await, fetch, and dynamic DOM manipulation.
-
-- IndexedDB: Asynchronous local database wrapper for persistent state management.
-
-- Blob URLs: Clever use of URL.createObjectURL to mount invisible Service Workers and Web Manifests without requiring actual separate files.
-
-📄 License
-
-This project is MIT licenses and free to use
+Licensed under MIT, same as the original.
